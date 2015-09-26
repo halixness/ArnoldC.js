@@ -1,16 +1,18 @@
-*.class
-*.log
-
-# sbt specific
-dist/*
+node_modules/
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
 
-# Scala-IDE specific
-.scala_dependencies
+# Visual Studio
+.vs/
+*.user
+bin/
+obj/
+*.sln
+*.csproj
 
-# Hidden file used in OS X in orgnaize icons
+# Mercurial
+.hg/
+.hgignore
+*.orig
+
+# Other
 .DS_Store
