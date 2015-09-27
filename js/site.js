@@ -1,8 +1,20 @@
 $(function() {
 	var editor = ace.edit("ace-editor");
+	editor.$blockScrolling = Infinity;
 	editor.setOptions({
 		maxLines: 80
 	});
+
+	// Disable alt+e shortcut so it doesn't interfere with our accesskey
+	editor.commands.removeCommand('goToNextError');
+	editor.commands.removeCommand('goToPreviousError');
+
+	editor.getSession().setMode("ace/mode/arnoldc");
+
+	function setEditorCode(code) {
+		editor.setValue(code);
+		editor.session.selection.clearSelection();
+	}
 
 	var $tabPanel = $('#ace-editor-tabs');
 	var $tabs = $tabPanel.children('li');
@@ -13,13 +25,15 @@ $(function() {
 	});
 
 	$tabPanel.find(".tab-helloworld > a").click(function() {
-		var code = "IT'S SHOWTIME\n" +
+		setEditorCode(
+			"IT'S SHOWTIME\n" +
 			'TALK TO THE HAND "Hello World"\n' +
-			"YOU HAVE BEEN TERMINATED";
-		editor.setValue(code);
+			"YOU HAVE BEEN TERMINATED"
+		);
 	});
 	$tabPanel.find(".tab-factorial > a").click(function() {
-		var code = "IT'S SHOWTIME\n" + 
+		setEditorCode(
+			"IT'S SHOWTIME\n" + 
 			"\n" + 
 			"HEY CHRISTMAS TREE n\n" + 
 			"\tYOU SET US UP 0\n" + 
@@ -71,11 +85,12 @@ $(function() {
 			"\t\tI'LL BE BACK result\n" + 
 			"\n" + 
 			"\tYOU HAVE NO RESPECT FOR LOGIC\n" + 
-			"HASTA LA VISTA, BABY\n";
-		editor.setValue(code);
+			"HASTA LA VISTA, BABY\n"
+		);
 	});
 	$tabPanel.find(".tab-fibonacci > a").click(function() {
-		var code = "IT'S SHOWTIME\n" +
+		setEditorCode(
+			"IT'S SHOWTIME\n" +
 			"HEY CHRISTMAS TREE prev\n" +
 			"YOU SET US UP -1\n" +
 			"HEY CHRISTMAS TREE result\n" +
@@ -109,11 +124,11 @@ $(function() {
 			"\tENOUGH TALK\n\t" +
 			"\n\tTALK TO THE HAND sum\n" +
 			"CHILL\n" +
-			"\nYOU HAVE BEEN TERMINATED";
-		editor.setValue(code);
+			"\nYOU HAVE BEEN TERMINATED"
+		);
 	});
 
-	// Click the first tab to populate some code in the editor
+	// Simulate a click on the first tab so the editor is populated with some code to start.
 	$tabs.filter(':first').children('a:first').click();
 
 
@@ -123,22 +138,44 @@ $(function() {
 		e.preventDefault();
 
 		$arnoldcOutput.text('');
-
-		var code = editor.getValue();
-		console.log('code', code);
-		try {
-			var output = [];
-			var executeOptions = {
-				log: function (x) { 
-					$arnoldcOutput.append(document.createTextNode(x + "\n"));
-				}
-			};
-			arnoldc.transpileToJsAndExecute(code, executeOptions);
-		} catch (err) {
-			console.log('err', err);
-			var errorMessage =  err.message;
-			$arnoldcOutput.append(document.createTextNode(errorMessage  + "\n"));
-		}
 		$arnoldcOutputSection.show();
+
+		setTimeout(function() {
+			var code = editor.getValue();
+			try {
+				var lastOutputLine;
+				var executeOptions = {
+					log: function (x) { 
+						lastOutputLine = x;
+						$arnoldcOutput.append(document.createTextNode(x + "\n"));
+					},
+					prompt: function() {
+						var label = 'Enter an integer:';
+
+						// If the last line has a colon in it, then assume that was a label for this prompt.
+						if (lastOutputLine && lastOutputLine.indexOf(':') > 0) {
+							label = lastOutputLine;
+						}
+						return prompt(label, '');
+					}
+				};
+				arnoldc.transpileToJsAndExecute(code, executeOptions);
+
+				$arnoldcOutput.hide();
+				$arnoldcOutput.show('fade');
+			} catch (err) {
+				var errorMessage = err.message || err;
+				$arnoldcOutput.append(document.createTextNode(errorMessage  + "\n"));
+			}
+		});
+	});
+
+	// If we're in a browser that supports the accessKeyLabel property,
+	// (currently only firefox) then add the shortcut as a title.
+	$('.action-arnoldc-execute').each(function() {
+		var accessKeyLabel = this.accessKeyLabel;
+		if (accessKeyLabel) {
+			$(this).attr('title', accessKeyLabel);
+		}
 	});
 });
