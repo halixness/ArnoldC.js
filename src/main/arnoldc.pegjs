@@ -186,23 +186,5 @@ Char
 //		/ "\\"
 //	) { return sequence }
 
-//Char
-//	=  [\x20-\x21\x23-\x5B\x5D-\u10FFFF]
-//	/ "\\" sequence:(
-//		'"'
-//		/ "\\"
-//		/ "/"
-//		/ "b" { return "\b" }
-//		/ "f" { return "\f" }
-//		/ "n" { return "\n" }
-//		/ "r" { return "\r" }
-//		/ "t" { return "\t" }
-//		/ "u" digits:$(HexDigit HexDigit HexDigit HexDigit) { return String.fromCharCode(parseInt(digits, 16)) }
-//	) { 
-//		return sequence 
-//	}
-//
-//HexDigit = [0-9a-f]i
-
 EOL = [\r\t ]* [\n] [\r\n\t ]* { return null }
 WhiteSpace = [ \t]* { return null }

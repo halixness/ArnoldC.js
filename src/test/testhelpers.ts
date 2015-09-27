@@ -17,15 +17,20 @@ module testhelpers {
     }
 
     export function isSyntaxError(e: Error): boolean {
-        return e.name === 'SyntaxError';
+        return e.name === 'SyntaxError'
+            && e.toString().indexOf(e.message) >= 0;
     }
     export function isTranspileError(e: Error): boolean {
-        return e.name === 'TranspileError';
+        return e.name === 'TranspileError'
+            && e.toString().indexOf(e.message) >= 0
+            && e.message.indexOf('WHAT THE FUCK DID I DO WRONG:') === 0;
     }
     export function isReferenceError(e: Error): boolean {
-        return e.name === 'ReferenceError';
+        return e.name === 'ReferenceError'
+            && e.toString().indexOf(e.message) >= 0;
     }
     export function isRangeError(e: Error): boolean {
-        return e.name === 'RangeError';
+        return e.name === 'RangeError'
+            && e.toString().indexOf(e.message) >= 0;
     }
 }

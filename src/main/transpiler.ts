@@ -27,25 +27,23 @@ module arnoldc {
     /**
      * Thrown when an error is detected during transpilation (after parsing is complete).
      */
-    export class TranspileError implements Error {
+    export class TranspileError extends Error {
         /**
          * Constructs an error with the specified message.
          * @param message - the error message
          */
         constructor(message: string) {
+            super(message);
             this.name = 'TranspileError';
-            this.message = 'WHAT THE FUCK DID I DO WRONG: \n' + message;
+            this.message = 'WHAT THE FUCK DID I DO WRONG: ' + message;
         }
+    }
 
-        /**
-         * The name of this error ("TranspileError").
-         */
-        name: string;
-
-        /**
-         * The error message.
-         */
-        message: string;
+    declare class Error {
+        public name: string;
+        public message: string;
+        public stack: string;
+        constructor(message?: string);
     }
 
     interface TranspileContext {
@@ -583,9 +581,7 @@ module arnoldc {
         // so we might have to do some escaping...
         var escapedString = str
             .replace(/\r/g, '\\r')
-            .replace(/\n/g, '\\n')
-            //.replace(/\\/g, '\\\\"')
-            //.replace(/"/g, '\\"');
+            .replace(/\n/g, '\\n');
         return escapedString;
     }
 
@@ -603,7 +599,7 @@ module arnoldc {
         if (reservedWords.indexOf(methodName) >= 0) {
             // We can get around the reserved keyword restriction by using a unicode escape sequence 
             // for a character in the method name.
-            // This would allow us to avoid changing the actual value of the method name 
+            // This allows us to avoid changing the actual value of the method name 
             // in case some other library might try using the method.
             let prefix = methodName.substr(0, methodName.length - 1);
             let suffix = '\\u' + ('0000' + methodName.charCodeAt(methodName.length - 1).toString(16)).slice(-4);

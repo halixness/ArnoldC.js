@@ -2362,6 +2362,11 @@ var arnoldc;
 })(arnoldc || (arnoldc = {}));
 
 /// <reference path="parser.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var arnoldc;
 (function (arnoldc) {
     /**
@@ -2389,17 +2394,19 @@ var arnoldc;
     /**
      * Thrown when an error is detected during transpilation (after parsing is complete).
      */
-    var TranspileError = (function () {
+    var TranspileError = (function (_super) {
+        __extends(TranspileError, _super);
         /**
          * Constructs an error with the specified message.
          * @param message - the error message
          */
         function TranspileError(message) {
+            _super.call(this, message);
             this.name = 'TranspileError';
-            this.message = 'WHAT THE FUCK DID I DO WRONG: \n' + message;
+            this.message = 'WHAT THE FUCK DID I DO WRONG: ' + message;
         }
         return TranspileError;
-    })();
+    })(Error);
     arnoldc.TranspileError = TranspileError;
     function createTranspileContext() {
         var sb = createStringBuilder();
@@ -2866,8 +2873,6 @@ var arnoldc;
         var escapedString = str
             .replace(/\r/g, '\\r')
             .replace(/\n/g, '\\n');
-        //.replace(/\\/g, '\\\\"')
-        //.replace(/"/g, '\\"');
         return escapedString;
     }
     function escapeMethodName(methodName) {
@@ -2884,7 +2889,7 @@ var arnoldc;
         if (reservedWords.indexOf(methodName) >= 0) {
             // We can get around the reserved keyword restriction by using a unicode escape sequence 
             // for a character in the method name.
-            // This would allow us to avoid changing the actual value of the method name 
+            // This allows us to avoid changing the actual value of the method name 
             // in case some other library might try using the method.
             var prefix = methodName.substr(0, methodName.length - 1);
             var suffix = '\\u' + ('0000' + methodName.charCodeAt(methodName.length - 1).toString(16)).slice(-4);
