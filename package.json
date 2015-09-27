@@ -1,0 +1,14 @@
+{
+  "name": "ArnoldC-js-web",
+  "version": "0.0.0",
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-filter": "^3.0.1",
+    "gulp-flatten": "^0.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.4.1",
+    "main-bower-files": "^2.9.0"
+  }
+}

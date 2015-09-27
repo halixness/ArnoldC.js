@@ -1,0 +1,28 @@
+{
+  "name": "ArnoldC-js-web",
+  "version": "0.0.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "ace-builds": "~1.2",
+    "bootstrap": "~3.3",
+    "jquery": "~2.1"
+  },
+  "overrides": {
+    "ace-builds": {
+      "main": "src-min/ace.js"
+    },
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.min.js",
+        "dist/css/bootstrap.min.css"
+      ]
+    },
+    "jquery": {
+      "main": "dist/jquery.min.js"
+    }
+  }
+}
