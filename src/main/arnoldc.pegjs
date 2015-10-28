@@ -5,6 +5,7 @@ EndMain = "YOU HAVE BEEN TERMINATED"
 DeclareMethod = "LISTEN TO ME VERY CAREFULLY"
 EndMethodDeclaration = "HASTA LA VISTA, BABY"
 DeclareInt = "HEY CHRISTMAS TREE"
+DeclareNumber = "REPLACE WITH ARNOLD QUOTE"
 SetInitialValue = "YOU SET US UP"
 PlusOperator = "GIVE YOU A LIFT"
 PlusOperatorDeprecated = "GET UP"
@@ -70,16 +71,22 @@ Statement
 
 StatementBase
 	= DeclareIntStatement
+	/ DeclareNumberStatement
 	/ PrintStatement
 	/ AssignVariableStatement
 	/ ConditionStatement
 	/ WhileStatement
 	/ CallMethodStatement
 	/ CallReadMethodStatement
-
+	
 DeclareIntStatement
 	= DeclareInt WhiteSpace variableName:VariableName EOL SetInitialValue WhiteSpace operand:Operand EOL { 
 		return { statementType: "DeclareInt", variableName: variableName, operand: operand  } 
+	}
+
+DeclareNumberStatement
+	= DeclareNumber WhiteSpace variableName:VariableName EOL SetInitialValue WhiteSpace operand:Operand EOL { 
+		return { statementType: "DeclareNumber", variableName: variableName, operand: operand  } 
 	}
 
 PrintStatement
@@ -150,7 +157,7 @@ LogicalOperation
 	/ GreaterThan WhiteSpace operand:Operand EOL { return { operationType: "logical", operator: ">", operand: operand }}
 
 Operand
-	= Variable / Number / Boolean
+	= Number / Variable / Integer / Boolean
 
 Variable
 	= VariableName { 
@@ -162,7 +169,7 @@ VariableName
 		return text() 
 	}
 
-Number
+Integer
 	= '-'? [0-9]+ { 
 		return { operandType: "Literal", valueType: 'int', value: parseInt(text(), 10) } 
 	}
@@ -170,6 +177,11 @@ Number
 Boolean
 	= ('@' True) { return { operandType: "Literal", valueType: 'bool', value: true } }
 	/ ('@' False) { return { operandType: "Literal", valueType: 'bool', value: false } }
+
+Number
+	= [0-9]* '.' [0-9]* {
+		return { operandType: "Literal", valueType: 'number', value: parseFloat(text())}
+	}
 
 String
 	= value:StringValue { 

@@ -282,6 +282,8 @@ module arnoldc {
             appendPrintStatementJs(context, <PrintStatement>statement);
         } else if (statement.statementType === "DeclareInt") {
             appendDeclareIntStatementJs(context, <DeclareIntStatement>statement);
+        } else if (statement.statementType === "DeclareNumber") {
+            appendDeclareNumberStatementJs(context, <DeclareNumberStatement>statement);
         } else if (statement.statementType === "AssignVariable") {
             appendAssignVariableStatementJs(context, <AssignVariableStatement>statement);
         } else if (statement.statementType === "CallMethod") {
@@ -355,6 +357,18 @@ module arnoldc {
         sb.appendLine(';');
     }
 
+    function appendDeclareNumberStatementJs(context: TranspileContext, statement: DeclareIntStatement): void {
+        let sb = context.sb;
+        context.declareVariable(statement.variableName);
+        sb.append('var ');
+        sb.append(escapeVariableName(statement.variableName));
+        if (statement.operand) {
+            sb.append(' = ');
+            appendOperandJs(context, statement.operand);
+        }
+        sb.appendLine(';');
+    }
+
     function appendAssignVariableStatementJs(context: TranspileContext, statement: AssignVariableStatement): void {
         let sb = context.sb;
 
@@ -415,7 +429,7 @@ module arnoldc {
                 // Doing a bitwise and will convert the result to a signed 32-bit integer,
                 // This should get us the overflow/underflow behaviour that we need
                 // to match the real ArnoldC.
-                sb.appendLine(')|0;');
+                sb.appendLine(');'); // remove the cast to int |0
             } else {
                 sb.appendLine(');');
 
@@ -434,7 +448,7 @@ module arnoldc {
                 sb.append(tempVariableName);
                 sb.append(' = ');
                 sb.append(tempVariableName);
-                sb.appendLine('|0;');
+                sb.appendLine(';'); // remove the cast to int |0
             }
         }
 
@@ -549,6 +563,9 @@ module arnoldc {
             sb.append('"');
             sb.append(escapeDoubleQuotedString(<string>operand.value));
             sb.append('"');
+        } else if (operand.valueType === 'number') {
+            let valueFloat = <number>operand.value;
+            sb.append(valueFloat.toString());
         } else {
             throw new TranspileError('Unrecognized literal value type: ' + operand.valueType);
         }

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "devDependencies": {
     "del": "^2.0.2",
-    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp": "gulpjs/gulp#4.0",
     "gulp-concat": "^2.6.0",
     "gulp-notify": "^2.2.0",
     "gulp-peg": "^0.1.2",

@@ -53,6 +53,11 @@ declare module arnoldc {
         operand: Operand;
     }
 
+    interface DeclareNumberStatement extends Statement {
+        variableName: string;
+        operand: Operand;
+    }
+
     interface AssignVariableStatement extends Statement {
         variableName: string;
         expression: Expression;
